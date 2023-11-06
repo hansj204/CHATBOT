@@ -1,6 +1,7 @@
-conda install django matplotlib tensorflow
+conda install django matplotlib
 
 django-admin startproject chatbot
+
 cd chatbot
 python manage.py migrate
 

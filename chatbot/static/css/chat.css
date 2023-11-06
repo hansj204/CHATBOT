@@ -1,0 +1,48 @@
+.bubble {
+    position: relative;
+    padding: 15px;
+    width: 25vw; 
+    height: auto;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.left-bubble {
+    background-color: #e6e6e6;
+    border-radius: 20px 15px 15px 0;
+    margin-right: auto;
+}
+
+.right-bubble {
+    background-color: #ff8c00;
+    color: #fff;
+    border-radius: 15px 15px 0 15px;
+    margin-left: auto;
+}
+
+.send-msg {
+    width: calc(100% - 100px);
+    border: 3px solid #ff8c00;
+    border-radius: 40px;
+    outline: none;
+    resize: none;
+    padding: 10px;
+    align-self: center;
+    margin: 10px;
+    margin-right: 5px;
+}
+
+.send-btn {
+    align-self: center;
+    outline: auto;
+    border: none;
+    background: #ffffff;
+    border-radius: 30px;
+    padding: 6px;
+}
+
+@media only screen and (max-width: 900px) {
+    .bubble {
+        width: 50vw;
+    }
+}

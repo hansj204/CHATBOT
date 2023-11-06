@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI Test Chatbot</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+</head>
+<body>
+    <div class="outer">       
+        <div class="inner">
+            <div style="width: 100%; display: flex; height: 30px; padding: 10px 0px; border-bottom: 1px solid; justify-content: center;">
+                MBTI &nbsp; &nbsp;
+                <button type="button" id="close-btn" class="send-btn" onclick="location.href='/result'" >대화 종료</button>
+            </div>
+            <div style="width: 100%; display: flex; height: 100%;">
+                <ul id="chatting-list" class="chatting-list" style="width: 100%; padding: 10px"></ul>
+            </div>
+            <div style="width: 100%; display: flex;">
+                <textarea type="text" id="send-msg" class="send-msg" rows="2" maxlength="200"></textarea>
+                <button type="button" id="send-btn" class="send-btn">전송</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.getElementById('send-btn').addEventListener('click', event => {
+        const messageEl = document.getElementById('send-msg');
+
+        const userBubbleEl = document.createElement('div');
+        userBubbleEl.classList.add('bubble');
+        userBubbleEl.classList.add('left-bubble');
+        userBubbleEl.innerHTML = messageEl.value;
+
+        document.getElementById('chatting-list').appendChild(userBubbleEl);
+
+        const botBubbleEl = document.createElement('div');
+        botBubbleEl.classList.add('bubble');
+        botBubbleEl.classList.add('right-bubble');
+        botBubbleEl.innerHTML = 'Loading...';
+
+        setTimeout(() => {
+            document.getElementById('chatting-list').appendChild(botBubbleEl);
+            setTimeout(() => {
+                botBubbleEl.innerHTML = 'TEST'
+            }, 1000)           
+        }, 400)
+
+        messageEl.value = ``;
+    });
+</script>
+</html>

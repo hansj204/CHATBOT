@@ -11,44 +11,146 @@
 <body>
     <div class="outer">       
         <div class="inner">
-            <div style="width: 100%; display: flex; height: 30px; padding: 10px 0px; border-bottom: 1px solid; justify-content: center;">
-                MBTI &nbsp; &nbsp;
-                <button type="button" id="close-btn" class="send-btn" onclick="location.href='/result'" >대화 종료</button>
+            <div class="header">
+                MBTI 테스트 &nbsp;
+                <button type="button" id="close-btn" class="btn">대화 종료</button>
             </div>
             <div style="width: 100%; display: flex; height: 100%;">
-                <ul id="chatting-list" class="chatting-list" style="width: 100%; padding: 10px"></ul>
+                <ul id="chatting-list" class="chatting-list"></ul>
             </div>
             <div style="width: 100%; display: flex;">
-                <textarea type="text" id="send-msg" class="send-msg" rows="2" maxlength="200"></textarea>
-                <button type="button" id="send-btn" class="send-btn">전송</button>
+                <textarea type="text" id="send-msg" class="send-msg" rows="1" maxlength="200" placeholder="Message Chatbot…"></textarea>
+                <button type="button" id="send-btn" class="btn">전송</button>
             </div>
         </div>
     </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
+    var chattingList = localStorage.getItem('chattingList');
+
+    if (chattingList) {
+        document.getElementById('chatting-list').innerHTML = chattingList;
+    }
+
+    let botBubbleEl;
+
+    document.getElementById('send-msg').addEventListener('input', event => {
+        const minRows = 1;
+        const maxRows = 5;
+        const textarea = document.getElementById('send-msg');
+
+        textarea.rows = Math.min(maxRows, Math.max(minRows, textarea.value.split('\n').length));
+    });
+
+    document.getElementById('send-msg').addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            document.getElementById('send-btn').click();
+        }
+    });
+
+    document.getElementById('close-btn').addEventListener('click', event => {
+        const bubbleCount = document.getElementById('chatting-list').children.length / 2;
+        const minBubble = 1;
+
+        if(bubbleCount < minBubble) {
+            Swal.fire({
+                icon: "error",
+                title: "챗봇과 조금 더 대화해주세요",
+                text: "MBTI 유형을 결정하기 위한 데이터가 부족합니다.(" + bubbleCount + "/" + minBubble +")",
+                confirmButtonColor: "#ff8c00",
+            });
+        } else {
+            Swal.fire({
+                title: "정말 대화를 종료하시겠습니까?",
+                text: "지금까지의 대화를 바탕으로 MBTI 유형이 결정됩니다.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#ff8c00",
+                cancelButtonColor: "#4d4746",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('chattingList');
+                    location.href='/result';
+                }
+            });
+        }
+    });
+
     document.getElementById('send-btn').addEventListener('click', event => {
         const messageEl = document.getElementById('send-msg');
+        const msgValue = messageEl.value;
 
         const userBubbleEl = document.createElement('div');
         userBubbleEl.classList.add('bubble');
         userBubbleEl.classList.add('left-bubble');
-        userBubbleEl.innerHTML = messageEl.value;
+        userBubbleEl.innerHTML = msgValue;
 
         document.getElementById('chatting-list').appendChild(userBubbleEl);
+        saveData(userBubbleEl);
 
-        const botBubbleEl = document.createElement('div');
+        botBubbleEl = document.createElement('div');
         botBubbleEl.classList.add('bubble');
         botBubbleEl.classList.add('right-bubble');
         botBubbleEl.innerHTML = 'Loading...';
 
         setTimeout(() => {
-            document.getElementById('chatting-list').appendChild(botBubbleEl);
+            document.getElementById('chatting-list').appendChild(botBubbleEl);  
+
+            {% comment %} 모델이 완성되면 getData(msgValue); saveData(botBubbleEl); {% endcomment %}
+
+            {% comment %} 임시로 {% endcomment %}
             setTimeout(() => {
                 botBubbleEl.innerHTML = 'TEST'
-            }, 1000)           
+                saveData(botBubbleEl);
+            }, 1000)
+
         }, 400)
 
         messageEl.value = ``;
     });
+
+    function saveData(element) {
+        var chattingList = localStorage.getItem('chattingList');
+
+        if (chattingList) {
+            localStorage.setItem('chattingList', chattingList + element.outerHTML);
+        } else {
+            localStorage.setItem('chattingList', element.outerHTML); 
+        }
+    }
+
+    function getData(sentence) {
+        const csrfToken = getCookie('csrftoken');
+
+        fetch('/chat', {
+            method: 'POST',
+           headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({'sentence': sentence}),
+        })
+        .then(response => response.json())
+        .then(data => {
+            botBubbleEl.innerHTML = data.predicted_sentence
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 </script>
 </html>

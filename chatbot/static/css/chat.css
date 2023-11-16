@@ -1,3 +1,7 @@
+.chatting-list{
+    width: 100%; padding: 10px
+}
+
 .bubble {
     position: relative;
     padding: 15px;
@@ -23,22 +27,13 @@
 .send-msg {
     width: calc(100% - 100px);
     border: 3px solid #ff8c00;
-    border-radius: 40px;
+    border-radius: 20px;
     outline: none;
     resize: none;
     padding: 10px;
     align-self: center;
     margin: 10px;
     margin-right: 5px;
-}
-
-.send-btn {
-    align-self: center;
-    outline: auto;
-    border: none;
-    background: #ffffff;
-    border-radius: 30px;
-    padding: 6px;
 }
 
 @media only screen and (max-width: 900px) {

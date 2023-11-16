@@ -12,10 +12,13 @@
         <div class="inner">
             <div class="content">
                 <span class="mbti_title">MBTI TEST<br>Chatbot</span>
-                <button class="rounded-button" type="button" onclick="location.href='/chat'">테스트 시작</button>
+                <button type="button" class="rounded-button" onclick="location.href='/chat'">테스트 시작</button>
             </div>
             <img src="{% static 'images/big_eye.png' %}" alt="MBTI Image">
         </div>
     </div>
 </body>
+<script>
+    localStorage.removeItem('chattingList');
+</script>
 </html>

@@ -6,16 +6,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MBTI Test Chatbot</title>
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
 </head>
 <body>
     <div class="outer">
         <div class="inner">
+            <div class="header">테스트 결과</div>
             <div class="content">
-                테스트 결과
-                <button type="button" id="send-btn" class="send-btn" onclick="location.href='/'">다시하기</button>
-                <button type="button" id="send-btn" class="send-btn">저장</button>
+                <div id="result">
+                    <span id="result_type"></span>
+                    <span id="result_desc"></span>
+                </div>
+                <div>
+                    <button type="button" id="send-btn" class="rounded-button" onclick="location.href='/'">다시하기</button>
+                    <button type="button" id="save-btn" class="rounded-button" onclick="printDiv()">저장</button>
+                </div>
             </div>
         </div>
     </div>
 </body>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="{% static 'js/mbti.js' %}"></script>
+<script>
+    const mbti_type = "{{ mbti_type }}";
+
+    document.getElementById('result_type').innerHTML = '당신은 ' + mbti_type + '입니다.';
+    document.getElementById('result_desc').innerHTML = mbtiResult[mbti_type].replace(/\./g, '.<br>');
+
+    function printDiv(){
+        html2canvas(document.getElementById('result')).then(function(canvas){
+            var myImage = canvas.toDataURL();
+            downloadURI(myImage, "MBTI 테스트 결과.png");
+        });
+    }
+
+    function downloadURI(uri, name){
+        var link = document.createElement("a");
+        link.download = name;
+        link.href = uri;
+        document.body.appendChild(link);
+        link.click();
+    }
+</script>
 </html>

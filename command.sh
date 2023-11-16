@@ -1,7 +1,6 @@
 # 라이브러리
-pip install django matplotlib
-pip install -c anaconda tensorflow-datasets
-pip install tensorflow_datasets==4.9.2
+pip install tensorflow_datasets
+pip install django matplotlib tensorflow-datasets
 
 # 실행
 cd chatbot

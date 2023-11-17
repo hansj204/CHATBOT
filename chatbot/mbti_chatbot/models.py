@@ -1,48 +1,16 @@
-from django.db import models
-from django.contrib.auth.models import User
-import pandas as pd
 import re
-import tensorflow as tf
-import tensorflow_datasets as tfds
-import os
+from .talkModel.talk_model import *
 
-current_directory = os.path.dirname(os.path.abspath(__file__))
+model = transformer_model()
+model.load_weights(model_weights_path)
 
-model_folder_path = os.path.join(current_directory, 'model')
-data_folder_path = os.path.join(model_folder_path, 'data')
-
-train_data = pd.read_csv(os.path.join(data_folder_path, 'ChatBotData.csv'))
-train_data.head()
-
-# 빈껍데기
-model = tf.keras.models.Sequential()
-# model = tf.keras.models.load_model(os.path.join(data_folder_path, 'saveModel'))
-
-questions = [] 
-answers = []
-MAX_LENGTH = 40
-
-for sentence in train_data['Q']:
-    sentence = re.sub(r"([?.!,])", r" \1 ", sentence)
-    sentence = sentence.strip()
-    questions.append(sentence)
-    
-
-for sentence in train_data['A']:
-    sentence = re.sub(r"([?.!,])", r" \1 ", sentence)
-    sentence = sentence.strip()
-    answers.append(sentence)
-    
-tokenizer = tfds.deprecated.text.SubwordTextEncoder.build_from_corpus(questions + answers, target_vocab_size=2**13)
-
-START_TOKEN, END_TOKEN = [tokenizer.vocab_size], [tokenizer.vocab_size + 1]
-MAX_LENGTH = 40
-
+# 사용자 메세지 전처리
 def preprocess_sentence(sentence):
     sentence = re.sub(r"([?.!,])", r" \1 ", sentence)
     sentence = sentence.strip()
     return sentence
 
+# 응답 메세지에 해당하는 단어 예측
 def evaluate(sentence):
     sentence = preprocess_sentence(sentence)
     sentence = tf.expand_dims(START_TOKEN + tokenizer.encode(sentence) + END_TOKEN, axis=0)
@@ -61,12 +29,9 @@ def evaluate(sentence):
 
     return tf.squeeze(output, axis=0)
 
+# 응답 메시지 생성
 def predict(sentence):
     prediction = evaluate(sentence)
     predicted_sentence = tokenizer.decode([i for i in prediction if i < tokenizer.vocab_size])
-
-    print('Input: {}'.format(sentence))
-    print('Output: {}'.format(predicted_sentence))
-
     return predicted_sentence
 

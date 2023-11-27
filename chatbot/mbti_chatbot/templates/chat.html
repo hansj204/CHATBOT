@@ -26,14 +26,16 @@
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="{% static 'js/common.js' %}"></script>
 <script>
-    var chattingList = localStorage.getItem('chattingList');
+    const chat_history = {{chat_history}};
 
-    if (chattingList) {
-        document.getElementById('chatting-list').innerHTML = chattingList;
+    if (chat_history) {
+        chat_history.forEach((chat, idx) => {
+            if(idx % 2 === 0) userBubble(msgValue);
+            else              botBubble(msgValue);
+        })
     }
-
-    let botBubbleEl;
 
     document.getElementById('send-msg').addEventListener('input', event => {
         const minRows = 1;
@@ -45,6 +47,7 @@
 
     document.getElementById('send-msg').addEventListener('keydown', event => {
         if (event.key === 'Enter' || event.keyCode === 13) {
+            document.getElementById('send-msg').rows = 1;
             document.getElementById('send-btn').click();
         }
     });
@@ -70,7 +73,6 @@
                 cancelButtonColor: "#4d4746",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    localStorage.removeItem('chattingList');
                     location.href='/result';
                 }
             });
@@ -81,69 +83,35 @@
         const messageEl = document.getElementById('send-msg');
         const msgValue = messageEl.value;
 
-        const userBubbleEl = document.createElement('div');
-        userBubbleEl.classList.add('bubble');
-        userBubbleEl.classList.add('left-bubble');
-        userBubbleEl.innerHTML = msgValue;
-
-        document.getElementById('chatting-list').appendChild(userBubbleEl);
-        saveData(userBubbleEl);
-
-        botBubbleEl = document.createElement('div');
-        botBubbleEl.classList.add('bubble');
-        botBubbleEl.classList.add('right-bubble');
-        botBubbleEl.innerHTML = 'Loading...';
-
+        userBubble(msgValue)
+        botBubble(msgValue)
+        
         messageEl.value = ``;
-
-        setTimeout(() => {
-            document.getElementById('chatting-list').appendChild(botBubbleEl);  
-
-            getData(msgValue); 
-            saveData(botBubbleEl);
-        }, 400);
     });
 
-    function saveData(element) {
-        var chattingList = localStorage.getItem('chattingList');
+    function userBubble(msg) {
+        const userBubbleEl = document.createElement('div');
+        userBubbleEl.classList.add('bubble');
+        userBubbleEl.classList.add('right-bubble');
+        userBubbleEl.innerHTML = msg;
 
-        if (chattingList) {
-            localStorage.setItem('chattingList', chattingList + element.outerHTML);
-        } else {
-            localStorage.setItem('chattingList', element.outerHTML); 
-        }
+        document.getElementById('chatting-list').appendChild(userBubbleEl);
     }
 
-    function getData(sentence) {
-        const xhr = new XMLHttpRequest();
+    function botBubble(msg) {
+        const botBubbleEl = document.createElement('div');
+        botBubbleEl.classList.add('bubble');
+        botBubbleEl.classList.add('left-bubble');
+        botBubbleEl.innerHTML = 'Loading...';
 
-        xhr.open('POST', '/chat', true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+        setTimeout(() => {
+            document.getElementById('chatting-list').appendChild(botBubbleEl);
 
-        xhr.send(JSON.stringify({'sentence': sentence}));
-
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                const responseData = JSON.parse(xhr.responseText);
-                botBubbleEl.innerHTML = responseData.predicted_sentence;
-            }
-        };
-    }
-
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
+            submit('/chat', {'sentence': msg}, (response) => {
+                const result = JSON.parse(response);
+                botBubbleEl.innerHTML = result.predicted_sentence
+            });
+        }, 400);
     }
 </script>
 </html>

@@ -20,7 +20,7 @@
             </div>
             <div style="width: 100%; display: flex;">
                 <textarea type="text" id="send-msg" class="send-msg" rows="1" maxlength="200" placeholder="Message Chatbot…"></textarea>
-                <button type="button" id="send-btn" class="btn">전송</button>
+                <button type="button" id="send-btn" class="btn" disabled>전송</button>
             </div>
         </div>
     </div>
@@ -42,6 +42,8 @@
         const maxRows = 5;
         const textarea = document.getElementById('send-msg');
 
+        document.getElementById('send-btn').disabled = 0 === textarea.value.length;
+
         textarea.rows = Math.min(maxRows, Math.max(minRows, textarea.value.split('\n').length));
     });
 
@@ -49,6 +51,7 @@
         if (event.key === 'Enter' || event.keyCode === 13) {
             document.getElementById('send-msg').rows = 1;
             document.getElementById('send-btn').click();
+            event.preventDefault();
         }
     });
 
@@ -83,10 +86,24 @@
         const messageEl = document.getElementById('send-msg');
         const msgValue = messageEl.value;
 
-        userBubble(msgValue)
-        botBubble(msgValue)
-        
+        if(0 === msgValue.trim().length) {
+            Swal.fire({
+                icon: "error",
+                text: "빈값입니다.",
+                confirmButtonColor: "#ff8c00",
+            });
+
+            return;
+        }
+
         messageEl.value = ``;
+        messageEl.disabled = true;
+        document.getElementById('send-btn').disabled = true;
+
+        userBubble(msgValue)
+        botBubble(msgValue, () => {
+            messageEl.disabled = false;
+        })
     });
 
     function userBubble(msg) {
@@ -98,7 +115,7 @@
         document.getElementById('chatting-list').appendChild(userBubbleEl);
     }
 
-    function botBubble(msg) {
+    function botBubble(msg, callback) {
         const botBubbleEl = document.createElement('div');
         botBubbleEl.classList.add('bubble');
         botBubbleEl.classList.add('left-bubble');
@@ -110,6 +127,8 @@
             submit('/chat', {'sentence': msg}, (response) => {
                 const result = JSON.parse(response);
                 botBubbleEl.innerHTML = result.predicted_sentence
+
+                if(callback) callback();
             });
         }, 400);
     }

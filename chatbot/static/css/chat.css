@@ -55,6 +55,10 @@
     margin-right: 5px;
 }
 
+.send-msg:disabled  {
+    border: rgba(118, 118, 118, 0.3) !important;
+}
+
 @media only screen and (max-width: 900px) {
     .bubble {
         width: 50vw;

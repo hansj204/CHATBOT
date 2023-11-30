@@ -27,13 +27,39 @@ NUM_HEADS = 8
 DFF = 512 #2048
 DROPOUT = 0.1
 
-def transformer_model():
-    tf.keras.backend.clear_session()
+tf.keras.backend.clear_session()
 
-    return transformer(
-        vocab_size=VOCAB_SIZE,
-        num_layers=NUM_LAYERS,
-        dff=DFF,
-        d_model=D_MODEL,
-        num_heads=NUM_HEADS,
-        dropout=DROPOUT)
+talk_model = transformer(
+    vocab_size=VOCAB_SIZE,
+    num_layers=NUM_LAYERS,
+    dff=DFF,
+    d_model=D_MODEL,
+    num_heads=NUM_HEADS,
+    dropout=DROPOUT)
+    
+talk_model.load_weights(model_weights_path)
+
+# 사용자 메세지 전처리
+def preprocess_sentence(sentence):
+    sentence = re.sub(r"([?.!,])", r" \1 ", sentence)
+    sentence = sentence.strip()
+    return sentence
+
+# 응답 메세지에 해당하는 단어 예측
+def evaluate(sentence):
+    sentence = preprocess_sentence(sentence)
+    sentence = tf.expand_dims(START_TOKEN + tokenizer.encode(sentence) + END_TOKEN, axis=0)
+
+    output = tf.expand_dims(START_TOKEN, 0)
+
+    for i in range(MAX_LENGTH):
+        predictions = talk_model(inputs=[sentence, output], training=False)
+        predictions = predictions[:, -1:, :]
+        predicted_id = tf.cast(tf.argmax(predictions, axis=-1), tf.int32)
+
+        if tf.equal(predicted_id, END_TOKEN[0]):
+            break
+
+        output = tf.concat([output, predicted_id], axis=-1)
+        
+    return tf.squeeze(output, axis=0)

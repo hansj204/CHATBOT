@@ -28,12 +28,12 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="{% static 'js/common.js' %}"></script>
 <script>
-    const chat_history = {{chat_history}};
+    const chat_history = {{chat_history|safe}};
 
     if (chat_history) {
         chat_history.forEach((chat, idx) => {
-            if(idx % 2 === 0) userBubble(msgValue);
-            else              botBubble(msgValue);
+            if(idx % 2 === 0) userBubble(chat);
+            else              initBotBubble(chat);
         })
     }
 
@@ -89,7 +89,7 @@
         if(0 === msgValue.trim().length) {
             Swal.fire({
                 icon: "error",
-                text: "빈값입니다.",
+                text: "빈 메세지입니다.",
                 confirmButtonColor: "#ff8c00",
             });
 
@@ -113,6 +113,14 @@
         userBubbleEl.innerHTML = msg;
 
         document.getElementById('chatting-list').appendChild(userBubbleEl);
+    }
+
+    function initBotBubble(msg) {
+        const botBubbleEl = document.createElement('div');
+        botBubbleEl.classList.add('bubble');
+        botBubbleEl.classList.add('left-bubble');
+        botBubbleEl.innerHTML = msg;
+        document.getElementById('chatting-list').appendChild(botBubbleEl);
     }
 
     function botBubble(msg, callback) {

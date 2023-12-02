@@ -36,7 +36,7 @@
             else              initBotBubble(chat);
         })
     }
-
+    
     document.getElementById('send-msg').addEventListener('input', event => {
         const minRows = 1;
         const maxRows = 5;
@@ -96,6 +96,11 @@
             return;
         }
 
+        window.setTimeout(()=> {
+            const chattingList = document.getElementById('chatting-list');
+            chattingList.scrollTop = chattingList.scrollHeight;
+        }, 50);
+
         messageEl.value = ``;
         messageEl.disabled = true;
         document.getElementById('send-btn').disabled = true;
@@ -103,6 +108,7 @@
         userBubble(msgValue)
         botBubble(msgValue, () => {
             messageEl.disabled = false;
+            messageEl.autofocus = true;
         })
     });
 

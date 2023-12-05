@@ -55,58 +55,41 @@ def questionGetCheck(question):
     count = questionList.count()
     return count
 
-# 명사만 태깅
-def extract_nouns(text): 
-    print("원본 텍스트:", text)
-    stop_words_list = stopwords.words('english')
-    nouns = []
-    result = []
-    text = re.sub('[^a-zA-Z0-9]', ' ', text).strip()
-    print("정규화 후 텍스트:", text)
-
-    # 정규화된 텍스트가 비어 있으면 빈 문자열 반환
-    if not text:
-        return ""
-
-    tokens = nltk.word_tokenize(text)
-    # print("토큰화된 단어:", tokens)
-    
-    for word in tokens:
-        if word not in stop_words_list:
-            result.append(word)
-
-    tagged = nltk.pos_tag(result)
-    # print("품사 태깅:", tagged)
-    for word, pos in tagged:
-        if pos.startswith('NN'):  
-            nouns.append(word)
-
-    # print("추출된 명사:", nouns)
-    return ' '.join(nouns)
-
-# 원형화
-def stemm(text):
-    stemmer = SnowballStemmer(language='english')
-    stemmed_text = stemmer.stem(text)
-    # print("원형화된 텍스트:", stemmed_text)
-    return stemmed_text
-
-# 한국어를 영어로 변환
-def translate_word(word):
+# 텍스트 전처리 함수
+def preprocess_text(text):
+   
+    # 번역
     translator = Translator()
-    translated_word = translator.translate(word, src='ko')
-    # print("번역된 단어:", translated_word.text)
-    return translated_word.text
+    translated_text = translator.translate(text, src='ko').text
+    print("번역된 텍스트:", translated_text)
+
+    # 소문자 변환
+    lower_text = translated_text.lower()
+    print("소문자 변환된 텍스트:", lower_text)
+
+    # 정규화
+    normalized_text = re.sub('[^a-zA-Z0-9]', ' ', lower_text).strip()
+    print("정규화된 텍스트:", normalized_text)
+
+    # 토큰화
+    tokens = nltk.word_tokenize(normalized_text)
+    print("토큰화된 텍스트:", tokens)
+
+    # 불용어 제거
+    stop_words_list = stopwords.words('english')
+    filtered_tokens = [word for word in tokens if word not in stop_words_list and word != 'think']
+    print("불용어 제거된 텍스트:", filtered_tokens)
+
+    # 원형화
+    stemmer = SnowballStemmer(language='english')
+    stemmed_tokens = [stemmer.stem(word) for word in filtered_tokens]
+    print("원형화된 텍스트:", stemmed_tokens)
+
+    return ' '.join(stemmed_tokens)
 
 # 챗봇으로 받은 데이터 처리
 def input_test(text):
-    text = translate_word(text)
-    text = pd.Series(text)
-    text = text.apply(lambda x: x.lower())
-    text = text.apply(extract_nouns)
-    result = text.apply(stemm)
-    # print("최종 처리된 텍스트:", result)
-    return result
+    return preprocess_text(text)
 
 def model_load():
     recreate_model = False
@@ -129,8 +112,8 @@ def scoring(sentence):
     processed_text = input_test(a)
 
     # Series가 비어 있는지 확인
-    if not processed_text.empty and processed_text.iloc[0]:
-        predicted_mbti = text_clf.predict([processed_text.iloc[0]])[0]  # 첫 번째 요소를 선택
+    if processed_text:
+        predicted_mbti = text_clf.predict([processed_text])[0]
         print("예측된 MBTI 유형:", predicted_mbti)
         
          # 각 MBTI 차원별 점수 누적

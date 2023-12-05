@@ -11,6 +11,7 @@ from nltk.corpus import stopwords
 import re
 import pickle
 from sklearn.model_selection import train_test_split
+import random
 
 nltk.download('punkt')
 # 전역 변수 초기화
@@ -201,20 +202,29 @@ def generate_mbti_explanation(analysis_result):
 
 def determine_mbti_type(mbti_scores):
     mbti_type = ""
-    threshold = 5  # 비슷한 경우를 결정하는 임계값
 
     for dimension, score in mbti_scores.items():
         i_percentage, e_percentage = map(float, re.findall(r'\b\d+\.\d+|\d+\b', score))
 
-        # 비슷한 경우 처리
-        if abs(i_percentage - e_percentage) <= threshold:
-            mbti_type += "X"  # 'X'는 퍼센트가 비슷한 경우를 나타냄
+        if i_percentage == e_percentage:
+            mbti_type += random.choice([dimension[0], dimension[-1]])
         elif i_percentage > e_percentage:
             mbti_type += dimension[0]
         else:
             mbti_type += dimension[-1]
 
     return mbti_type
+
+def simplify_mbti_scores(mbti_scores):
+    simplified_scores = {}
+    for dimension, score in mbti_scores.items():
+        percentages = score.split(", ")
+        for p in percentages:
+            type, percent = p.split(" - ")
+            percent_number = percent.replace("%", "")  # '%' 문자 제거
+            simplified_scores[type] = percent_number
+    return simplified_scores
+
     
 # 각 차원별 설명
 dimension_explanation = {

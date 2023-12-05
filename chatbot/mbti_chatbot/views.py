@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import predict, scoring, questionGet, QuestionDB, final_calculation, analyze_mbti_scores, generate_mbti_explanation, determine_mbti_type
+from .models import predict, scoring, questionGet, QuestionDB, final_calculation, analyze_mbti_scores, generate_mbti_explanation, determine_mbti_type, simplify_mbti_scores
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -61,6 +61,7 @@ def result(request):
     
     # MBTI 성향 계산
     mbti_scores = final_calculation()
+    simple_mbti_scores = simplify_mbti_scores(mbti_scores)
     
     # MBTI 유형 결정
     mbti_type = determine_mbti_type(mbti_scores)
@@ -72,9 +73,9 @@ def result(request):
     explanation = generate_mbti_explanation(analysis_result)
     
     print("도출된 mbti:", mbti_type)
-    print("퍼센트:", mbti_scores)
+    print("퍼센트:", simple_mbti_scores)
     print("퍼센트에 따른 설명:", explanation)
 
     # 결과 페이지에 정보 전달
-    return render(request, 'result.html', {'mbti_type': mbti_type, 'analysis_result': analysis_result, 'mbti_explanation': explanation})
+    return render(request, 'result.html', {'mbti_type': mbti_type, 'simplify_mbti_scores': simple_mbti_scores, 'mbti_explanation': explanation})
 

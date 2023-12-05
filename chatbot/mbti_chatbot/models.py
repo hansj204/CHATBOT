@@ -214,6 +214,17 @@ def determine_mbti_type(mbti_scores):
             mbti_type += dimension[-1]
 
     return mbti_type
+
+def simplify_mbti_scores(mbti_scores):
+    simplified_scores = {}
+    for dimension, score in mbti_scores.items():
+        percentages = score.split(", ")
+        for p in percentages:
+            type, percent = p.split(" - ")
+            percent_number = percent.replace("%", "")  # '%' 문자 제거
+            simplified_scores[type] = percent_number
+    return simplified_scores
+
     
 # 각 차원별 설명
 dimension_explanation = {

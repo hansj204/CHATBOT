@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import predict , questionGet ,QuestionDB
+from .models import predict, scoring, questionGet, QuestionDB, final_calculation, analyze_mbti_scores, generate_mbti_explanation, determine_mbti_type
 from django.http import JsonResponse
 import json
+from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
     request.session['chat_history'] = []
@@ -9,6 +10,7 @@ def index(request):
     QuestionDB.objects.all().delete() 
     return render(request, 'index.html')
 
+@csrf_exempt
 def chat(request):
     # if 'chat_history' in request.session:
     #     return redirect('/')
@@ -27,6 +29,9 @@ def chat(request):
         chat_history.append(user_message)
         chat_history.append(bot_message)
         request.session['chat_history'] = chat_history
+        
+        # 스코어링
+        scoring(user_message)
 
         return JsonResponse({'predicted_sentence': bot_message})
     
@@ -53,7 +58,23 @@ def result(request):
     
     request.session.clear()
     QuestionDB.objects.all().delete() 
-    mbti_type = 'INTJ'
     
-    return render(request, 'result.html', {'mbti_type': mbti_type})
+    # MBTI 성향 계산
+    mbti_scores = final_calculation()
+    
+    # MBTI 유형 결정
+    mbti_type = determine_mbti_type(mbti_scores)
+
+    # 성향 분석
+    analysis_result = analyze_mbti_scores(mbti_scores)
+
+    # 결과 설명 생성
+    explanation = generate_mbti_explanation(analysis_result)
+    
+    print("도출된 mbti:", mbti_type)
+    print("퍼센트:", mbti_scores)
+    print("퍼센트에 따른 설명:", explanation)
+
+    # 결과 페이지에 정보 전달
+    return render(request, 'result.html', {'mbti_type': mbti_type, 'analysis_result': analysis_result, 'mbti_explanation': explanation})
 

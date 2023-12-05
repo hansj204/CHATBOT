@@ -14,8 +14,13 @@
             <div class="header">테스트 결과</div>
             <div class="content">
                 <div id="result">
-                    <span id="result_type"></span>
-                    <span id="result_desc"></span>
+                    <h1 id="result_type"></h1>
+                    <div id="result_desc"></div>
+                    <canvas id="mbtiChart1" width="400" height="50"></canvas>
+                    <canvas id="mbtiChart2" width="400" height="50"></canvas>
+                    <canvas id="mbtiChart3" width="400" height="50"></canvas>
+                    <canvas id="mbtiChart4" width="400" height="50"></canvas>
+                    <div id="graph_desc"></div>
                 </div>
                 <div>
                     <button type="button" id="send-btn" class="rounded-button" onclick="location.href='/'">다시하기</button>
@@ -24,14 +29,26 @@
             </div>
         </div>
     </div>
+
 </body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="{% static 'js/mbti.js' %}"></script>
+<script src="{% static 'js/chart.js' %}"></script>
 <script>
-    const mbti_type = "{{ mbti_type }}";
+    
+    const mbti_type = "{{ mbti_type | safe}}";
+
+    const analysis_result = "{{ analysis_result | safe}}";
+
+    const mbti_explanation = "{{ mbti_explanation | safe}}";
+
+    console.log(analysis_result)
+    console.log(mbti_explanation)
 
     document.getElementById('result_type').innerHTML = '당신은 ' + mbti_type + '입니다.';
     document.getElementById('result_desc').innerHTML = mbtiResult[mbti_type].replace(/\./g, '.<br>');
+    document.getElementById('graph_desc').innerHTML = mbti_explanation.replace(/\./g, '.<br>');
 
     function printDiv(){
         html2canvas(document.getElementById('result')).then(function(canvas){

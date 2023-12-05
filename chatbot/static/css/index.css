@@ -101,12 +101,12 @@ img {
 }
 
 #result_type {
-    font-size: 10vh;
+    font-size: 3rem;
     margin: 5vh 0;
 }
 
-#result_desc{
-    font-size: 3vh;
+#result_desc, #graph_desc{
+    font-size: 1rem;
     white-space: nowrap;
     width: 100%;
     word-break: normal;

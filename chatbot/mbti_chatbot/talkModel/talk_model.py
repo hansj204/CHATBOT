@@ -105,26 +105,26 @@ def calculate_bleu_score(reference, candidate):
     return sentence_bleu(reference, candidate)
 
 def ask_gpt(question, user_msg):
-  text = '''정보: 말투 친절함, 첫 만남
-  정보를 바탕으로 A의 문장에 40자 이내로 공감하며 답하세요. 단, 물어보지 마세요.
-  Q: ''' + question + '''
-  A: ''' + user_msg
-  
-  response = api.generate(text, 40, temperature=0.15, top_p=0.5)
+    text = '''정보: 말투 친절함, 익명, 존댓말, 한문장
+    정보를 바탕으로 Q의 문장에 공감하며 답장하세요. 단, 의문문으로 답하지 마세요.
+    Q: 안녕하세요.
+    A: ''' + question + '''
+    Q: 나는 ''' + user_msg + '''
+    A: '''
+    
+    attempts = 0
+    max_attempts = 3
 
-  max_attempts = 3
-  attempts = 0
+    while attempts < max_attempts:
+        response = api.generate(text, 40, temperature=0.3, top_p=0.85)
+        response = response['generations'][0]['text']
+                
+        if calculate_bleu_score(response, user_msg) < 0.7 and 40 >= len(response):
+            attempts += 1
+        else:
+            break
 
-  while attempts < max_attempts:
-      if calculate_bleu_score(response, user_msg) < 0.7:
-          attempts += 1
-          
-          if attempts < max_attempts:
-              response = ask_gpt(question, user_msg)
-          else:
-              response = "네, 그렇군요. 다음 주제로 이야기해볼까요?"
-      
-      else:
-          break
+    if attempts > max_attempts:
+        response = "네, 그렇군요. 다음 주제로 이야기해볼까요?"
 
-  return response
+    return response

@@ -20,7 +20,7 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 data_folder_path = os.path.join(current_directory, 'data')
 
 tokenizer_path = os.path.join(data_folder_path, 'tokenizer.pkl')
-model_weights_path = os.path.join(data_folder_path, 'weights_7.h5')
+model_weights_path = os.path.join(data_folder_path, 'weights_8.h5')
 
 with open(tokenizer_path, 'rb') as f:
     talk_tokenizer = pickle.load(f)

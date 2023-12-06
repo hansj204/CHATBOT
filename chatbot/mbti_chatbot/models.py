@@ -11,6 +11,7 @@ from googletrans import Translator
 from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import stopwords
 
+nltk.download('stopwords')
 nltk.download('punkt')
 
 # 전역 변수 초기화

@@ -28,7 +28,7 @@ def chat(request):
         request.session['chat_history'] = chat_history
         
         # 스코어링
-        # scoring(user_message)
+        scoring(user_message)
 
         return JsonResponse({'predicted_sentence': bot_message})
     

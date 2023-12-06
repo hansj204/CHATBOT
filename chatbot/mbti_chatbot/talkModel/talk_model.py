@@ -98,12 +98,11 @@ def calculate_topic_similarity(user_msg, bot_msg):
 api = KoGPT(service_key = "1e9517c7b61c42c24ba5f0d684d5922c")
 
 def ask_gpt(question, user_msg):
-    text = '''정보: 말투 친절함, 10자 이상의 감탄문
-    정보를 바탕으로 으로 질문에 답하세요. 
+    text = '''정보: 말투 친절함
+    정보를 바탕으로 질문에 답하세요.
     Q: ''' + question + '''
     A: ''' + user_msg
     
-    response_json = api.generate(text, 32, temperature=0.3, top_p=0.85)
-    response = json.loads(response_json)
+    response = api.generate(text, 32, temperature=0.5, top_p=0.85)
 
     return response['generations'][0]['text']

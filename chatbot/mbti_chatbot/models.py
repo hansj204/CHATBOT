@@ -25,19 +25,14 @@ j_score = 0
 p_score = 0
 
 def predict(question, user_msg):
-    prediction = evaluate(question, user_msg)
-    bot_msg = talk_tokenizer.decode([i for i in prediction if i < talk_tokenizer.vocab_size])    
+    #prediction = evaluate(question, user_msg)
+    #bot_msg = talk_tokenizer.decode([i for i in prediction if i < talk_tokenizer.vocab_size])    
     #similarity_score = calculate_topic_similarity(user_msg, bot_msg)
     
-    print('Input: {}'.format(user_msg))
-    print('Output: {}'.format(bot_msg))
+    #print('Input: {}'.format(user_msg))
+    #print('Output: {}'.format(bot_msg))
     
-    # if similarity_score > 0.5:
-    #     next_response = bot_msg
-    # else:
-    #     next_response = '네, 그렇군요. 다음 주제로 이야기해볼까요?'
-
-    return bot_msg
+    return ask_gpt(question, user_msg)
 
 def questionGet():
 

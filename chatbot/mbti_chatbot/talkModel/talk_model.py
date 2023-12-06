@@ -4,7 +4,10 @@ import json
 import pickle
 import tensorflow as tf
 
-from konlpy.tag import Okt
+from nltk.translate.bleu_score import sentence_bleu
+from PyKakao import KoGPT
+
+"""
 from keybert import KeyBERT
 from gensim.models import LdaModel
 from gensim.corpora import Dictionary
@@ -13,8 +16,6 @@ from PyKakao import KoGPT
 
 from .classes import *
 from .transformer import transformer
-
-okt = Okt()
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 data_folder_path = os.path.join(current_directory, 'data')
@@ -94,15 +95,36 @@ def calculate_topic_similarity(user_msg, bot_msg):
     similarity_score = similarity_index[bot_topic]
 
     return similarity_score[0]
+"""
 
 api = KoGPT(service_key = "1e9517c7b61c42c24ba5f0d684d5922c")
 
-def ask_gpt(question, user_msg):
-    text = '''정보: 말투 친절함
-    정보를 바탕으로 질문에 답하세요.
-    Q: ''' + question + '''
-    A: ''' + user_msg
-    
-    response = api.generate(text, 32, temperature=0.5, top_p=0.85)
+def calculate_bleu_score(reference, candidate):
+    reference = [reference.split()]
+    candidate = candidate.split()
+    return sentence_bleu(reference, candidate)
 
-    return response['generations'][0]['text']
+def ask_gpt(question, user_msg):
+  text = '''정보: 말투 친절함, 첫 만남
+  정보를 바탕으로 A의 문장에 40자 이내로 공감하며 답하세요. 단, 물어보지 마세요.
+  Q: ''' + question + '''
+  A: ''' + user_msg
+  
+  response = api.generate(text, 40, temperature=0.15, top_p=0.5)
+
+  max_attempts = 3
+  attempts = 0
+
+  while attempts < max_attempts:
+      if calculate_bleu_score(response, user_msg) < 0.7:
+          attempts += 1
+          
+          if attempts < max_attempts:
+              response = ask_gpt(question, user_msg)
+          else:
+              response = "네, 그렇군요. 다음 주제로 이야기해볼까요?"
+      
+      else:
+          break
+
+  return response

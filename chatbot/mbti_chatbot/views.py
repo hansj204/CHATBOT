@@ -12,9 +12,6 @@ def index(request):
 
 @csrf_exempt
 def chat(request):
-    # if 'chat_history' in request.session:
-    #     return redirect('/')
-    
     chat_history = request.session.get('chat_history', [])
     
     if request.method == 'GET':
@@ -24,14 +21,14 @@ def chat(request):
         
         data = json.loads(request.body.decode('utf-8'))
         user_message = data.get('sentence')        
-        bot_message = predict(user_message)
+        bot_message = predict(chat_history[-1], user_message)
         
         chat_history.append(user_message)
         chat_history.append(bot_message)
         request.session['chat_history'] = chat_history
         
         # 스코어링
-        scoring(user_message)
+        # scoring(user_message)
 
         return JsonResponse({'predicted_sentence': bot_message})
     
@@ -48,14 +45,9 @@ def question(request):
 
 def questionCheck(request):
     chat_questionCheck = request.session.get('chat_questionCheck')
-    print('chat_questionCheck:' + chat_questionCheck)
-   
     return JsonResponse({'chat_questionCheck': chat_questionCheck})
 
 def result(request):
-    # if 'chat_history' in request.session:
-    #     return redirect('/')
-    
     request.session.clear()
     QuestionDB.objects.all().delete() 
     

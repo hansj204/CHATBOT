@@ -6,25 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MBTI Test Chatbot</title>
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
-    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+    <link rel="stylesheet" href="{% static 'css/result.css' %}">
 </head>
 <body>
     <div class="outer">
         <div class="inner">
-            <div class="header">테스트 결과</div>
-            <div class="content">
-                <div id="result">
+            <div class="header" style="padding-bottom: 0px">테스트 결과</div>
+            <div class="content" style="flex-direction: initial; align-items: initial; overflow: auto; width: 100%;">
+                <div class="result">
                     <h1 id="result_type"></h1>
                     <div id="result_desc"></div>
-                    <canvas id="mbtiChart1" width="400" height="50"></canvas>
-                    <canvas id="mbtiChart2" width="400" height="50"></canvas>
-                    <canvas id="mbtiChart3" width="400" height="50"></canvas>
-                    <canvas id="mbtiChart4" width="400" height="50"></canvas>
-                    <div id="graph_desc"></div>
-                </div>
-                <div>
-                    <button type="button" id="send-btn" class="rounded-button" onclick="location.href='/'">다시하기</button>
-                    <button type="button" id="save-btn" class="rounded-button" onclick="printDiv()">저장</button>
+
+                    <div style="margin: 50px 0px;">
+                        <canvas id="eiChart" width="400" height="50"></canvas>
+                        <div id="eiChart_desc" class="graph_desc"></div>
+                    </div>
+                    <div style="margin: 50px 0px;">
+                        <canvas id="snChart" width="400" height="50"></canvas>
+                        <div id="snChart_desc" class="graph_desc"></div>
+                    </div>
+                    <div style="margin: 50px 0px;">
+                        <canvas id="tfChart" width="400" height="50"></canvas>
+                        <div id="tfChart_desc" class="graph_desc"></div>
+                    </div>
+                    <div style="margin: 50px 0px;">
+                        <canvas id="jpChart" width="400" height="50"></canvas>
+                        <div id="jpChart_desc" class="graph_desc"></div>
+                    </div>
+
+                    <div style="margin-bottom: 10px">
+                        <button type="button" id="send-btn" class="rounded-button" onclick="location.href='/'" style="margin-top: 0;">다시하기</button>
+                        <button type="button" id="save-btn" class="rounded-button" onclick="printDiv()" style="margin-top: 0;">저장</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,29 +48,40 @@
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="{% static 'js/mbti.js' %}"></script>
 <script src="{% static 'js/chart.js' %}"></script>
-<script>
-    
+<script> 
+    // mbti 유형
     const mbti_type = "{{ mbti_type | safe}}";
-
-    const analysis_result = "{{ analysis_result | safe}}";
-
-    const mbti_explanation = "{{ mbti_explanation | safe}}";
-
-    console.log(analysis_result)
-    console.log(mbti_explanation)
-
-    document.getElementById('result_type').innerHTML = '당신은 ' + mbti_type + '입니다.';
+    document.getElementById('result_type').innerHTML = '지금의 당신은 ' + mbti_type + '입니다.';
     document.getElementById('result_desc').innerHTML = mbtiResult[mbti_type].replace(/\./g, '.<br>');
-    document.getElementById('graph_desc').innerHTML = mbti_explanation.replace(/\./g, '.<br>');
+    
+    const prefixList = ['ei', 'sn', 'tf', 'jp'];
 
-    function printDiv(){
+    // mbti 비율 
+    const mbti_scores = "{{ simplify_mbti_scores | safe}}"; 
+    const labelList = [['E', 'I'], ['S', 'N'], ['T', 'F'], ['J', 'P']]
+    const jsonObject = JSON.parse(mbti_scores.replace(/'/g, '"'));
+
+    prefixList.forEach((prefix, idx)=> {
+        createMbtiConfig(`${prefix}Chart`, labelList[idx], jsonObject);
+    });
+
+    // mbti 상세 설명
+    const mbti_explanation = "{{ mbti_explanation | safe}}";
+    const detail_desc = mbti_explanation.split('당신은').filter(sentence => sentence.trim() !== '');
+
+    prefixList.forEach((prefix, idx) => {
+        document.getElementById(`${prefix}Chart_desc`).innerHTML = detail_desc[idx].replace(/\./g, '.<br>');
+    });
+
+    // 다운로드
+    function printDiv() {
         html2canvas(document.getElementById('result')).then(function(canvas){
             var myImage = canvas.toDataURL();
             downloadURI(myImage, "MBTI 테스트 결과.png");
         });
     }
 
-    function downloadURI(uri, name){
+    function downloadURI(uri, name) {
         var link = document.createElement("a");
         link.download = name;
         link.href = uri;

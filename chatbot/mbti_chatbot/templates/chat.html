@@ -34,14 +34,15 @@
     window.onload = function() {
         submit('/questionCheck', null ,(response) => {
                 const result = JSON.parse(response);
-                chat_questionCheck = result.chat_questionCheck
-                console.log("ddddddddddddddd");
-                console.log(chat_questionCheck);
-                if (chat_questionCheck === "NO") {
+                chat_questionCheck = result.chat_questionCheck;
+                
+                if (chat_questionCheck === "NO") {   
                     const messageEl = document.getElementById('send-msg');
                     messageEl.disabled = true;
+
                     document.getElementById('send-btn').disabled = true;
-                    questionBotBubble( () => {
+
+                    questionBotBubble(() => {
                         messageEl.disabled = false;
                         messageEl.autofocus = true;
                     })
@@ -57,12 +58,9 @@
             if((idx+1)-num ===2) userBubble(chat);
             else if((idx+1)-num === 3) initBotBubble(chat);
             else  initQuestionBotBubble(chat);
-            console.log((idx+1))
             if((idx+1)%3 === 0){
                 num += 3
-                console.log(num)
             }
-           
         })
     }
     
@@ -85,8 +83,8 @@
     });
 
     document.getElementById('close-btn').addEventListener('click', event => {
-        const bubbleCount = document.getElementById('chatting-list').children.length / 2;
-        const minBubble = 1;
+        const bubbleCount = parseInt(document.getElementById('chatting-list').children.length / 2);
+        const minBubble = 5;
 
         if(bubbleCount < minBubble) {
             Swal.fire({
@@ -125,22 +123,18 @@
             return;
         }
 
-        window.setTimeout(()=> {
-            const chattingList = document.getElementById('chatting-list');
-            chattingList.scrollTop = chattingList.scrollHeight;
-        }, 50);
-
         messageEl.value = ``;
         messageEl.disabled = true;
         document.getElementById('send-btn').disabled = true;
 
-        userBubble(msgValue)
+        userBubble(msgValue);
+
         botBubble(msgValue, () => {
-            questionBotBubble( () => {
+            questionBotBubble(() => {
                 messageEl.disabled = false;
-                messageEl.autofocus = true;
-            })
-        })
+                messageEl.focus();
+            });
+        });
     });
 
     function userBubble(msg) {
@@ -150,6 +144,7 @@
         userBubbleEl.innerHTML = msg;
 
         document.getElementById('chatting-list').appendChild(userBubbleEl);
+        scroll();
     }
 
     function initBotBubble(msg) {
@@ -174,15 +169,17 @@
         botBubbleEl.innerHTML = 'Loading...';
 
         setTimeout(() => {
-            document.getElementById('chatting-list').appendChild(botBubbleEl);
-
-            submit('/chat', {'sentence': msg}, (response) => {
-                const result = JSON.parse(response);
-                botBubbleEl.innerHTML = result.predicted_sentence
-
-                if(callback) callback();
-            });
+            document.getElementById('chatting-list').appendChild(botBubbleEl);            
         }, 400);
+
+        submit('/chat', {'sentence': msg}, (response) => {
+            const result = JSON.parse(response);
+            botBubbleEl.innerHTML = result.predicted_sentence;
+
+            scroll();
+
+            if(callback) callback();
+        });
     }
     function questionBotBubble(callback){
         const botBubbleEl = document.createElement('div');
@@ -191,15 +188,23 @@
         botBubbleEl.innerHTML = 'Loading...';
        
         setTimeout(() => {
-            document.getElementById('chatting-list').appendChild(botBubbleEl);
+            document.getElementById('chatting-list').appendChild(botBubbleEl);            
+
             submit('/question', null ,(response) => {
                 const result = JSON.parse(response);
-                botBubbleEl.innerHTML = result.question
+                botBubbleEl.innerHTML = result.question;
+
+                scroll();
 
                 if(callback) callback();
             });
            
         }, 600);
+    }
+
+    function scroll() {
+        const container = document.getElementsByClassName('container')[0];
+        container.scrollTop = container.scrollHeight;
     }
 </script>
 </html>

@@ -1,19 +1,18 @@
-from .talkModel.talk_model import tokenizer, evaluate
-import pandas as pd
 from django.db import models
-import pandas as pd
-import numpy as np
 import os
-from googletrans import Translator
-import nltk
-from nltk.stem.snowball import SnowballStemmer
-from nltk.corpus import stopwords
 import re
 import pickle
-from sklearn.model_selection import train_test_split
 import random
+import pandas as pd
+import nltk
+
+from .talkModel.talk_model import talk_tokenizer, evaluate, calculate_topic_similarity, ask_gpt
+from googletrans import Translator
+from nltk.stem.snowball import SnowballStemmer
+from nltk.corpus import stopwords
 
 nltk.download('punkt')
+
 # 전역 변수 초기화
 i_score = 0
 e_score = 0
@@ -24,14 +23,20 @@ t_score = 0
 j_score = 0
 p_score = 0
 
-def predict(sentence):
-    prediction = evaluate(sentence)
-    predicted_sentence = tokenizer.decode([i for i in prediction if i < tokenizer.vocab_size])
+def predict(question, user_msg):
+    prediction = evaluate(question, user_msg)
+    bot_msg = talk_tokenizer.decode([i for i in prediction if i < talk_tokenizer.vocab_size])    
+    #similarity_score = calculate_topic_similarity(user_msg, bot_msg)
+    
+    print('Input: {}'.format(user_msg))
+    print('Output: {}'.format(bot_msg))
+    
+    # if similarity_score > 0.5:
+    #     next_response = bot_msg
+    # else:
+    #     next_response = '네, 그렇군요. 다음 주제로 이야기해볼까요?'
 
-    print('Input: {}'.format(sentence))
-    print('Output: {}'.format(predicted_sentence))
-
-    return predicted_sentence
+    return bot_msg
 
 def questionGet():
 
@@ -39,9 +44,8 @@ def questionGet():
     df = pd.read_csv (data_path)
     question = df['Q'].sample(n = 1).reset_index(drop=True).iloc[0]
 
-    print('question:' + question)  
+    print('question:' + question)
     count = questionGetCheck(question)
-    print(count)  
 
     questionDB= QuestionDB()
     if count == 0 :

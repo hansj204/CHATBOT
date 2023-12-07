@@ -1,17 +1,9 @@
 import re
 import os
-import json
 import pickle
 import tensorflow as tf
 
 from nltk.translate.bleu_score import sentence_bleu
-from PyKakao import KoGPT
-
-"""
-from keybert import KeyBERT
-from gensim.models import LdaModel
-from gensim.corpora import Dictionary
-from gensim.similarities import Similarity
 from PyKakao import KoGPT
 
 from .classes import *
@@ -48,20 +40,37 @@ talk_model = transformer(
     
 talk_model.load_weights(model_weights_path)    
     
-def preprocess_sentence(sentence):
-    sentence = re.sub(r"([?.!,])", r" \1 ", sentence)
-    sentence = sentence.strip()
-    return sentence
+def preprocess_user_msg(msg):
+    msg = re.sub(r"([?.!,])", r" \1 ", msg)
+    msg = msg.strip()
+    return msg
 
-def extract_keywords_bert_from_string(text):
-    kw_extractor = KeyBERT('distilbert-base-nli-mean-tokens')
-    keywords = kw_extractor.extract_keywords(text)
-    meaningful_keywords = [(kw, weight) for kw, weight in keywords if weight >= 0.5]
-    return [item[0] for item in meaningful_keywords][:5]
+def preprocess_bot_msg(msg):
+    msg = re.sub(r'\([^)]*\)', '', msg)
+       
+    index_of_q = msg.find('Q')
+    endings = ['!', '.', ',']
+    
+    if index_of_q != -1:
+        msg = msg[:index_of_q]
+        
+    for ending in endings:
+        index = msg.find(ending)
+    
+        if index != -1:
+            msg = msg[:index + 1]
+            break
+        
+    return msg
+
+def calculate_bleu_score(reference, candidate):
+    reference = [reference.split()]
+    candidate = candidate.split()
+    return sentence_bleu(reference, candidate)
 
 def evaluate(question, user_msg):
   input_text = question + ' ' + user_msg
-  sentence = preprocess_sentence(input_text)
+  sentence = preprocess_user_msg(input_text)
   sentence = tf.expand_dims(START_TOKEN + talk_tokenizer.encode(sentence) + END_TOKEN, axis=0)
 
   output = tf.expand_dims(START_TOKEN, 0)
@@ -78,49 +87,7 @@ def evaluate(question, user_msg):
 
   return tf.squeeze(output, axis=0)
 
-def calculate_topic_similarity(user_msg, bot_msg):
-    user_tokens = extract_keywords_bert_from_string(user_msg)
-    bot_tokens = extract_keywords_bert_from_string(bot_msg)
-
-    dictionary = Dictionary([user_tokens, bot_tokens])
-
-    corpus = [dictionary.doc2bow(tokens) for tokens in [user_tokens, bot_tokens]]
-
-    lda_model = LdaModel(corpus, id2word=dictionary, num_topics=2)
-
-    user_topic = lda_model[dictionary.doc2bow(user_tokens)]
-    bot_topic = lda_model[dictionary.doc2bow(bot_tokens)]
-
-    similarity_index = Similarity('', [user_topic], num_features=len(dictionary))
-    similarity_score = similarity_index[bot_topic]
-
-    return similarity_score[0]
-"""
-
 api = KoGPT(service_key = "1e9517c7b61c42c24ba5f0d684d5922c")
-
-def calculate_bleu_score(reference, candidate):
-    reference = [reference.split()]
-    candidate = candidate.split()
-    return sentence_bleu(reference, candidate)
-
-def preprocess_bot_msg(msg):
-    msg = re.sub(r'\([^)]*\)', '', msg)
-       
-    index_of_q = msg.find('Q')
-    endings = ['?', '!', '.']
-    
-    if index_of_q != -1:
-        msg = msg[:index_of_q]
-        
-    for ending in endings:
-        index = msg.find(ending)
-    
-        if index != -1:
-            msg = msg[:index + 1]
-            break
-        
-    return msg
 
 def ask_gpt(question, user_msg):
     text = '''정보: 말투 친절함, 익명 한문장

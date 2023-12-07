@@ -1,6 +1,7 @@
 # 라이브러리
 pip install tensorflow_datasets
 pip install django matplotlib tensorflow-datasets
+pip install PyKakao
 
 #db 추가
 python manage.py migrate

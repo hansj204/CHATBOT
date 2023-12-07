@@ -6,8 +6,7 @@ import random
 import pandas as pd
 import nltk
 
-# from .talkModel.talk_model import talk_tokenizer, evaluate, calculate_topic_similarity, ask_gpt
-from .talkModel.talk_model import ask_gpt
+from .talkModel.talk_model import talk_tokenizer, evaluate, calculate_bleu_score, ask_gpt
 from googletrans import Translator
 from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import stopwords
@@ -27,14 +26,13 @@ p_score = 0
 
 def predict(question, user_msg):
     try:        
-        #prediction = evaluate(question, user_msg)
-        #bot_msg = talk_tokenizer.decode([i for i in prediction if i < talk_tokenizer.vocab_size])    
-        #similarity_score = calculate_topic_similarity(user_msg, bot_msg)
+        prediction = evaluate(question, user_msg)
+        bot_msg = talk_tokenizer.decode([i for i in prediction if i < talk_tokenizer.vocab_size])    
         
-        #print('Input: {}'.format(user_msg))
-        #print('Output: {}'.format(bot_msg))
-        
-        return ask_gpt(question, user_msg)
+        if calculate_bleu_score(bot_msg, user_msg) > 0.7:
+            return bot_msg
+        else:
+            return ask_gpt(question, user_msg)
     except Exception as e:
         print(f"에러 발생: {e}")
         return "제가 잘 이해하지 못했어요. 다른 질문을 해볼게요."

@@ -62,11 +62,13 @@ input, textarea, button, span {
     align-items: center;
     justify-content: center;
     height: 100%;
-    font-size: 10vh;
+    font-size: 1.2rem;
+    /* #10vh; */
 }
 
 .mbti_title {
     font-family: "PartialSansKR-Regular";
+    font-size: 10vh;
 }
 
 .rounded-button {
@@ -98,18 +100,6 @@ img {
     width: 80%;
     object-fit: contain;
     align-self: center;
-}
-
-#result_type {
-    font-size: 3rem;
-    margin: 5vh 0;
-}
-
-#result_desc, .graph_desc{
-    font-size: 1rem;
-    white-space: nowrap;
-    width: 100%;
-    word-break: normal;
 }
 
 @media only screen and (max-width: 900px) {

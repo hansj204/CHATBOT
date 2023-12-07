@@ -1,8 +1,12 @@
 # 라이브러리
+pip install django matplotlib
+pip install pandas
+pip install tensorflow
 pip install tensorflow_datasets
-pip install django matplotlib tensorflow-datasets
-pip install PyKakao
+pip install googletrans==3.1.0a0
+pip install PyKakao pickle
 pip install python-decouple
+pip install nltk
 
 #db 추가
 python manage.py migrate

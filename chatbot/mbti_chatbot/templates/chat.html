@@ -85,7 +85,7 @@
     });
 
     document.getElementById('close-btn').addEventListener('click', event => {
-        const bubbleCount = parseInt(document.getElementById('chatting-list').children.length / 2);
+        const bubbleCount = document.querySelectorAll('.right-bubble').length;
         const minBubble = 5;
 
         if(bubbleCount < minBubble) {

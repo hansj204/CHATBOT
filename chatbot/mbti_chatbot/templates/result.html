@@ -13,7 +13,7 @@
         <div class="inner">
             <div class="header" style="padding-bottom: 0px">테스트 결과</div>
             <div class="content" style="flex-direction: initial; align-items: initial; overflow: auto; width: 100%;">
-                <div class="result">
+                <div id="result" style="width: calc(100% - 30px); margin-right: 15px">
                     <h1 id="result_type"></h1>
                     <div id="result_desc"></div>
 
@@ -33,10 +33,11 @@
                         <canvas id="jpChart" width="400" height="50"></canvas>
                         <div id="jpChart_desc" class="graph_desc"></div>
                     </div>
-
-                    <div style="margin-bottom: 10px">
-                        <button type="button" id="send-btn" class="rounded-button" onclick="location.href='/'" style="margin-top: 0;">다시하기</button>
-                        <button type="button" id="save-btn" class="rounded-button" onclick="printDiv()" style="margin-top: 0;">저장</button>
+                    <div id="btnArea" style="padding-bottom: 20px;">
+                        <div>
+                            <button type="button" id="send-btn" class="rounded-button" onclick="location.href='/'" style="margin-top: 0;">다시하기</button>
+                            <button type="button" id="save-btn" class="rounded-button" onclick="printDiv()" style="margin-top: 0;">저장</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -75,9 +76,17 @@
 
     // 다운로드
     function printDiv() {
-        html2canvas(document.getElementById('result')).then(function(canvas){
+        const element = document.getElementById('result');
+        const orgHeight = element.style.height;
+        element.style.height = element.scrollHeight + 'px';
+        
+        document.getElementById('btnArea').style.display = 'none'
+
+        html2canvas(element).then(function(canvas) {
             var myImage = canvas.toDataURL();
             downloadURI(myImage, "MBTI 테스트 결과.png");
+            element.style.height = orgHeight;
+            document.getElementById('btnArea').style.display = 'inline-block';
         });
     }
 

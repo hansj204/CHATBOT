@@ -5,6 +5,7 @@ import tensorflow as tf
 
 from nltk.translate.bleu_score import sentence_bleu
 from PyKakao import KoGPT
+from decouple import config
 
 from .classes import *
 from .transformer import transformer
@@ -87,7 +88,8 @@ def evaluate(question, user_msg):
 
   return tf.squeeze(output, axis=0)
 
-api = KoGPT(service_key = "1e9517c7b61c42c24ba5f0d684d5922c")
+KoGPT_KEY = config('KoGPT_KEY')
+api = KoGPT(service_key = KoGPT_KEY)
 
 def ask_gpt(question, user_msg):
     text = '''정보: 말투 친절함, 익명 한문장

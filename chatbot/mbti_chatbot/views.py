@@ -33,7 +33,6 @@ def chat(request):
         return JsonResponse({'predicted_sentence': bot_message})
     
 def question(request):
-    request.session['chat_questionCheck'] = "YES"
     chat_history = request.session.get('chat_history', [])
     
     question = questionGet()
@@ -42,7 +41,18 @@ def question(request):
     request.session['chat_history'] = chat_history
     
     return JsonResponse({'question': question})
+    
+def initMsg(request):
+    request.session['chat_questionCheck'] = "YES"
+    chat_history = request.session.get('chat_history', [])
+    
+    question = "안녕하세요! 저는 당신의 대답을 바탕으로 MBTI 성격 유형을 분석합니다. 간단한 대화를 통해 자신에 대해 더 많이 알아가 보세요. 제가 던지는 질문에 답해주세요. 답변을 통해 당신의 MBTI 유형을 파악하고 결과를 이미지로 저장할 수도 있어요."
 
+    chat_history.append(question)
+    request.session['chat_history'] = chat_history
+    
+    return JsonResponse({'question': question})
+    
 def questionCheck(request):
     chat_questionCheck = request.session.get('chat_questionCheck')
     return JsonResponse({'chat_questionCheck': chat_questionCheck})

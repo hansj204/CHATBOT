@@ -171,14 +171,13 @@
         botBubbleEl.innerHTML = 'Loading...';
 
         setTimeout(() => {
-            document.getElementById('chatting-list').appendChild(botBubbleEl);            
+            document.getElementById('chatting-list').appendChild(botBubbleEl);
+            scroll();       
         }, 400);
 
         submit('/chat', {'sentence': msg}, (response) => {
             const result = JSON.parse(response);
             botBubbleEl.innerHTML = result.predicted_sentence;
-
-            scroll();
 
             if(callback) callback();
         });
@@ -190,13 +189,12 @@
         botBubbleEl.innerHTML = 'Loading...';
        
         setTimeout(() => {
-            document.getElementById('chatting-list').appendChild(botBubbleEl);            
+            document.getElementById('chatting-list').appendChild(botBubbleEl);
+            scroll();        
 
             submit('/question', null ,(response) => {
                 const result = JSON.parse(response);
                 botBubbleEl.innerHTML = result.question;
-
-                scroll();
 
                 if(callback) callback();
             });

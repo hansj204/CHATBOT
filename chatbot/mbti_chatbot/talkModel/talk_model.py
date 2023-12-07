@@ -104,9 +104,27 @@ def calculate_bleu_score(reference, candidate):
     candidate = candidate.split()
     return sentence_bleu(reference, candidate)
 
+def preprocess_bot_msg(msg):
+    msg = re.sub(r'\([^)]*\)', '', msg)
+       
+    index_of_q = msg.find('Q')
+    endings = ['?', '!', '.']
+    
+    if index_of_q != -1:
+        msg = msg[:index_of_q]
+        
+    for ending in endings:
+        index = msg.find(ending)
+    
+        if index != -1:
+            msg = msg[:index + 1]
+            break
+        
+    return msg
+
 def ask_gpt(question, user_msg):
-    text = '''정보: 말투 친절함, 익명, 존댓말, 한문장
-    정보를 바탕으로 Q의 문장에 공감하며 답장하세요. 단, 의문문으로 답하지 마세요.
+    text = '''정보: 말투 친절함, 익명 한문장
+    정보를 바탕으로 Q의 문장에 공감하며 존댓말로 답장하세요. 단, 의문문으로 답하지 마세요.
     Q: 안녕하세요.
     A: ''' + question + '''
     Q: 나는 ''' + user_msg + '''
@@ -118,8 +136,9 @@ def ask_gpt(question, user_msg):
     while attempts < max_attempts:
         response = api.generate(text, 40, temperature=0.3, top_p=0.85)
         response = response['generations'][0]['text']
+        response = preprocess_bot_msg(response)
                 
-        if calculate_bleu_score(response, user_msg) < 0.7 and 40 >= len(response):
+        if calculate_bleu_score(response, user_msg) < 0.7 and (0 >= len(response) or 40 <= len(response)):
             attempts += 1
         else:
             break
@@ -128,3 +147,4 @@ def ask_gpt(question, user_msg):
         response = "네, 그렇군요. 다음 주제로 이야기해볼까요?"
 
     return response
+

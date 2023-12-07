@@ -67,29 +67,29 @@ def preprocess_text(text):
     # 번역
     translator = Translator()
     translated_text = translator.translate(text, src='ko').text
-    print("번역된 텍스트:", translated_text)
+    #print("번역된 텍스트:", translated_text)
 
     # 소문자 변환
     lower_text = translated_text.lower()
-    print("소문자 변환된 텍스트:", lower_text)
+    #print("소문자 변환된 텍스트:", lower_text)
 
     # 정규화
     normalized_text = re.sub('[^a-zA-Z0-9]', ' ', lower_text).strip()
-    print("정규화된 텍스트:", normalized_text)
+    #print("정규화된 텍스트:", normalized_text)
 
     # 토큰화
     tokens = nltk.word_tokenize(normalized_text)
-    print("토큰화된 텍스트:", tokens)
+    #print("토큰화된 텍스트:", tokens)
 
     # 불용어 제거
     stop_words_list = stopwords.words('english')
     filtered_tokens = [word for word in tokens if word not in stop_words_list and word != 'think']
-    print("불용어 제거된 텍스트:", filtered_tokens)
+    #print("불용어 제거된 텍스트:", filtered_tokens)
 
     # 원형화
     stemmer = SnowballStemmer(language='english')
     stemmed_tokens = [stemmer.stem(word) for word in filtered_tokens]
-    print("원형화된 텍스트:", stemmed_tokens)
+    #print("원형화된 텍스트:", stemmed_tokens)
 
     return ' '.join(stemmed_tokens)
 
@@ -160,10 +160,10 @@ def final_calculation():
     jp_percentage = (j_score / total_jp) * 100 if total_jp else 0
 
     # 결과 출력
-    print(f"I/E Percentage: I - {ie_percentage}%, E - {100 - ie_percentage}%")
-    print(f"N/S Percentage: N - {ns_percentage}%, S - {100 - ns_percentage}%")
-    print(f"F/T Percentage: F - {ft_percentage}%, T - {100 - ft_percentage}%")
-    print(f"J/P Percentage: J - {jp_percentage}%, P - {100 - jp_percentage}%")
+    #print(f"I/E Percentage: I - {ie_percentage}%, E - {100 - ie_percentage}%")
+    #print(f"N/S Percentage: N - {ns_percentage}%, S - {100 - ns_percentage}%")
+    #print(f"F/T Percentage: F - {ft_percentage}%, T - {100 - ft_percentage}%")
+    #print(f"J/P Percentage: J - {jp_percentage}%, P - {100 - jp_percentage}%")
     
     return {
         "I/E": f"I - {ie_percentage}%, E - {100 - ie_percentage}%",

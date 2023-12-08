@@ -92,7 +92,7 @@ KoGPT_KEY = config('KoGPT_KEY')
 api = KoGPT(service_key = KoGPT_KEY)
 
 def ask_gpt(question, user_msg):
-    text = '''정보: 말투 친절함, 익명 한문장
+    text = '''정보: 말투 친절함, 익명, 한국인
     정보를 바탕으로 Q의 문장에 공감하며 존댓말로 답장하세요. 단, 의문문으로 답하지 마세요.
     Q: 안녕하세요.
     A: ''' + question + '''

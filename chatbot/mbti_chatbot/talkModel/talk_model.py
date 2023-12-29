@@ -15,8 +15,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 current_directory = os.path.dirname(os.path.abspath(__file__))
 data_folder_path = os.path.join(current_directory, 'data')
 
-tokenizer_path = os.path.join(data_folder_path, 'chatbot_tokenizer.pkl')
-model_weights_path = os.path.join(data_folder_path, 'chatbot_weights.h5')
+tokenizer_path = os.path.join(data_folder_path, 'tokenizer.pkl')
+model_weights_path = os.path.join(data_folder_path, 'weights_personas_5.h5')
 
 KoGPT_KEY = config('KoGPT_KEY')
 api = KoGPT(service_key = KoGPT_KEY)

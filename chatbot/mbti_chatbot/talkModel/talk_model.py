@@ -3,7 +3,9 @@ import os
 import pickle
 import tensorflow as tf
 
-from nltk.translate.bleu_score import sentence_bleu
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from konlpy.tag import Okt
 from PyKakao import KoGPT
 from decouple import config
 
@@ -20,6 +22,8 @@ model_weights_path = os.path.join(data_folder_path, 'weights_personas_5.h5')
 
 KoGPT_KEY = config('KoGPT_KEY')
 api = KoGPT(service_key = KoGPT_KEY)
+
+okt = Okt()
 
 with open(tokenizer_path, 'rb') as f:
     talk_tokenizer = pickle.load(f)
@@ -58,10 +62,16 @@ def preprocess_bot_msg(msg):
         
     return msg
 
-def calculate_bleu_score(reference, candidate):
-    reference = [reference.split()]
-    candidate = candidate.split()
-    return sentence_bleu(reference, candidate)
+def calculate_bleu_score(bot_msg, user_msg):
+    user_tokens = okt.morphs(user_msg)
+    chatbot_tokens = okt.morphs(bot_msg)
+
+    # TF-IDF 벡터화
+    vectorizer = TfidfVectorizer(tokenizer=lambda x: x, lowercase=False)
+    tfidf_matrix = vectorizer.fit_transform([user_tokens, chatbot_tokens])
+
+    # 코사인 유사도 계산
+    return cosine_similarity(tfidf_matrix[0], tfidf_matrix[1])[0][0]
 
 def evaluate(user_msg):
   sentence = preprocess_user_msg(user_msg)
@@ -89,7 +99,7 @@ def get_bot_msg(user_msg):
 def is_valid_msg(user_msg, bot_msg):
     print(f"bot_msg: {bot_msg}")
     print(calculate_bleu_score(bot_msg, user_msg))
-    return calculate_bleu_score(bot_msg, user_msg) >= 0.7 and (0 < len(bot_msg) <= MAX_LENGTH)
+    return calculate_bleu_score(bot_msg, user_msg) >= 0.5 and (0 < len(bot_msg) <= MAX_LENGTH)
 
 def ask_chatbot(user_msg):
     bot_msg = get_bot_msg(user_msg)
@@ -111,7 +121,7 @@ def ask_gpt(question, user_msg):
     A: '''
     
     attempts = 0
-    max_attempts = 3
+    max_attempts = 1
     response = ''
 
     while attempts < max_attempts:
@@ -119,7 +129,7 @@ def ask_gpt(question, user_msg):
         response = response['generations'][0]['text']
         response = preprocess_bot_msg(response)
                 
-        if calculate_bleu_score(response, user_msg) >= 0.7 and (0 < len(response) <= 40): break
+        if calculate_bleu_score(response, user_msg) >= 0.5 and (0 < len(response) <= 40): break
         
         attempts += 1
 

@@ -50,7 +50,7 @@
 
 .send-msg {
     width: calc(100% - 100px);
-    border: 1px solid #f14b0f;
+    border: 2px solid #f14b0f;
     border-radius: 20px;
     outline: none;
     resize: none;

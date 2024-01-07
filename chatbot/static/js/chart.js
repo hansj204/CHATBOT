@@ -9,12 +9,12 @@ const createMbtiConfig = (id, label, data) => {
         {
           label: label1,
           data: [data[label1]],
-          backgroundColor: 'rgba(243, 115, 033)'
+          backgroundColor: 'rgba(245, 075, 015)'
         },
         {
           label: label2,
           data: [data[label2]],
-          backgroundColor: 'rgba(043, 063, 107)'
+          backgroundColor: 'rgba(242, 153, 015)'
         },
       ]
     },

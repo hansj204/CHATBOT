@@ -19,8 +19,8 @@
                 <ul id="chatting-list" class="chatting-list"></ul>
             </div>
             <div style="width: 100%; display: flex;">
-                <textarea type="text" id="send-msg" class="send-msg" rows="1" maxlength="200" placeholder="Message Chatbot…"></textarea>
-                <button type="button" id="send-btn" class="btn" disabled>전송</button>
+                <textarea type="text" id="send-msg" class="send-msg" rows="1" maxlength="200" placeholder="질문에 대한 답변을 입력해주세요."></textarea>
+                <button type="button" id="send-btn" class="send_btn" disabled></button>
             </div>
         </div>
     </div>
@@ -107,7 +107,7 @@
                 icon: "error",
                 title: "챗봇과 조금 더 대화해주세요",
                 text: "MBTI 유형을 결정하기 위한 데이터가 부족합니다.(" + bubbleCount + "/" + minBubble +")",
-                confirmButtonColor: "#ff8c00",
+                confirmButtonColor: "#f14b0f",
             });
         } else {
             Swal.fire({
@@ -115,8 +115,8 @@
                 text: "지금까지의 대화를 바탕으로 MBTI 유형이 결정됩니다.",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#ff8c00",
-                cancelButtonColor: "#4d4746",
+                confirmButtonColor: "#f14b0f",
+                cancelButtonColor: "#d7d5e0",
             }).then((result) => {
                 if (result.isConfirmed) {
                     location.href='/result';
@@ -133,7 +133,7 @@
             Swal.fire({
                 icon: "error",
                 text: "빈 메세지입니다.",
-                confirmButtonColor: "#ff8c00",
+                confirmButtonColor: "#f14b0f",
             });
 
             return;

@@ -32,7 +32,7 @@
 
                     <div id="btnArea" style="padding-bottom: 20px;">
                         <div>
-                            <button type="button" id="send-btn" class="rounded-button" onclick="location.href='/'" style="margin-top: 0;">다시하기</button>
+                            <button type="button" id="send-btn" class="rounded-button" onclick="location.href='/'" style="margin-top: 0;margin-right: 10px;">다시하기</button>
                             <button type="button" id="save-btn" class="rounded-button" onclick="printDiv()" style="margin-top: 0;">저장</button>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
 <script> 
     // mbti 유형
     const mbti_type = "{{ mbti_type | safe}}";
-    document.getElementById('result_type').innerHTML = '지금의 당신은 ' + mbti_type + '입니다.';
+    document.getElementById('result_type').innerHTML = '현재 당신은 ' + mbti_type + '입니다.';
     document.getElementById('result_desc').innerHTML = mbtiResult[mbti_type].replace(/\./g, '.<br>');
     
     const prefixList = ['ei', 'sn', 'tf', 'jp'];

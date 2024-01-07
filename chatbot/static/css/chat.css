@@ -9,11 +9,11 @@
     width: 10px;
 }
 .container::-webkit-scrollbar-thumb {
-    background-color: #2f3542;
+    background-color: #d7d5e0;
     border-radius: 10px;
 }
 .container::-webkit-scrollbar-track {
-    background-color: grey;
+    background-color: rgb(255, 255, 255);
     border-radius: 10px;
     box-shadow: inset 0px 0px 5px white;
 }
@@ -35,21 +35,22 @@
 }
 
 .left-bubble {
-    background-color: #e6e6e6;
+    background-color: #f4f4f4;
     border-radius: 20px 15px 15px 0;
     margin-right: auto;
 }
 
 .right-bubble {
-    background-color: #ff8c00;
+    background-color: #f14b0f;
     color: #fff;
     border-radius: 15px 15px 0 15px;
     margin-left: auto;
+    margin-right: 20px;
 }
 
 .send-msg {
     width: calc(100% - 100px);
-    border: 3px solid #ff8c00;
+    border: 1px solid #f14b0f;
     border-radius: 20px;
     outline: none;
     resize: none;
@@ -60,7 +61,7 @@
 }
 
 .send-msg:disabled  {
-    border: rgba(118, 118, 118, 0.3) !important;
+    border: #f4f4f4 !important;
 }
 
 @media only screen and (max-width: 900px) {

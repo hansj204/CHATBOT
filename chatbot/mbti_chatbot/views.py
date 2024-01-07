@@ -49,11 +49,9 @@ def initMsg(request):
     request.session['chat_questionCheck'] = "YES"
     chat_init_history = request.session.get('chat_init_history', [])
    
-    chat_init_history.append("안녕하세요!")
-    chat_init_history.append("저는 당신의 대답을 바탕으로 MBTI 성격 유형을 분석합니다.")
+    chat_init_history.append("안녕하세요!<br>저는 당신의 대답을 바탕으로 MBTI 성격 유형을 분석합니다.")
     chat_init_history.append("간단한 대화를 통해 자신에 대해 더 많이 알아가 보세요.")
-    chat_init_history.append("제가 던지는 질문에 답해주세요.")
-    chat_init_history.append("답변을 통해 당신의 MBTI 유형을 파악하고 결과를 이미지로 저장할 수도 있어요.")
+    chat_init_history.append("제가 드리는 질문에 답해주신다면 보내주시는 답변을 통해 당신의 MBTI 유형을 파악하고 결과를 이미지로 저장할 수도 있어요.")
     
     request.session['chat_init_history'] = chat_init_history
     

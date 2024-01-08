@@ -13,7 +13,7 @@
         <div class="inner">
             <div class="header" style="padding-bottom: 0px">테스트 결과</div>
             <div class="content" style="flex-direction: initial; align-items: initial; overflow: auto; width: 100%;">
-                <div id="result" style="width: calc(100% - 30px); margin-right: 15px">
+                <div id="result" style="width: calc(100% - 30px); margin-right: 5px">
                     <h1 id="result_type"></h1>
                     <div id="result_desc"></div>
 
@@ -49,7 +49,7 @@
 <script> 
     // mbti 유형
     const mbti_type = "{{ mbti_type | safe}}";
-    document.getElementById('result_type').innerHTML = '현재 당신은 ' + mbti_type + '입니다.';
+    document.getElementById('result_type').innerHTML = '현재 당신의 MBTI는 ' + mbti_type + '입니다.';
     document.getElementById('result_desc').innerHTML = mbtiResult[mbti_type].replace(/\./g, '.<br>');
     
     const prefixList = ['ei', 'sn', 'tf', 'jp'];

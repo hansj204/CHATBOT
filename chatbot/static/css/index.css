@@ -134,15 +134,22 @@ input, textarea, button, span {
     font-weight: 300;
 }
 
+@media screen and (max-width: 600px) {
+    .mbti_title {
+        font-family: "Multicolore";
+        font-size: 7vh;
+        font-weight: 300;
+    }
+}
+
 .rounded-button {
     width: 150px;
     padding: 10px 20px;
-    margin-top: 10vh;
+    margin-top: 6vh;
     border: none;
     border-radius: 30px;
     cursor: pointer;
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
-    
     font-size: 20px;
     font-weight: bold;
     background: #f14b0f;

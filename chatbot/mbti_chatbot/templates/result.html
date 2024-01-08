@@ -13,27 +13,22 @@
         <div class="inner">
             <div class="header" style="padding-bottom: 0px">테스트 결과</div>
             <div class="content" style="flex-direction: initial; align-items: initial; overflow: auto; width: 100%;">
-                <div id="result" style="width: calc(100% - 30px); margin-right: 5px">
+                <div id="result" style="width: calc(100% - 30px);">
                     <h1 id="result_type"></h1>
                     <div id="result_desc"></div>
 
                     <div style = "margin: 20px 0px">
-                        <canvas id="eiChart" width="200" height="25"></canvas>
-                        <br>                  
-                        <canvas id="snChart" width="200" height="25"></canvas>
-                        <br>
-                        <canvas id="tfChart" width="200" height="25"></canvas>
-                        <br>
-                        <canvas id="jpChart" width="200" height="25"></canvas>
-                        <br>
+                        <canvas id="eiChart" class="canvas_chart" width="200" height="25"></canvas>       
+                        <canvas id="snChart" class="canvas_chart" width="200" height="25"></canvas>
+                        <canvas id="tfChart" class="canvas_chart" width="200" height="25"></canvas>
+                        <canvas id="jpChart" class="canvas_chart" width="200" height="25"></canvas>
                         <div id="chart_desc" class="graph_desc"></div>
-                        <br>
                     <div>
 
                     <div id="btnArea" style="padding-bottom: 20px;">
                         <div>
-                            <button type="button" id="send-btn" class="rounded-button" onclick="location.href='/'" style="margin-top: 0;margin-right: 10px;">다시하기</button>
-                            <button type="button" id="save-btn" class="rounded-button" onclick="printDiv()" style="margin-top: 0;">저장</button>
+                            <button type="button" id="send-btn" class="rounded-button" onclick="location.href='/'" style="margin-right: 13px;">다시하기</button>
+                            <button type="button" id="save-btn" class="rounded-button" onclick="printDiv()">저장</button>
                         </div>
                     </div>
                 </div>

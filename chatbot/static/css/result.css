@@ -3,12 +3,44 @@
     margin: 5vh 0;
 }
 
+@media screen and (max-width: 600px) {
+    #result_type {
+        font-size: 1.5rem;
+        margin: 5vh 0;
+    }
+    
+}
+
 #result_desc, .graph_desc{
     font-size: 1rem;
-    white-space: nowrap;
+    white-space: normal;
     width: 100%;
-    word-break: normal;
-    line-height: 2;
+    word-break: break-word; 
+    line-height: 2;  
+}
+
+@media screen and (max-width: 600px) {
+    #result_desc, .graph_desc {
+        font-size: 0.7rem;
+        line-height: 1.4;
+    }
+}
+
+.canvas_chart {
+    margin-bottom: 20px;
+}
+
+#btnArea {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+@media screen and (max-width: 600px) {
+    #btnArea .rounded-button {
+        font-size: 0.8rem; 
+        padding: 10px 15px; 
+        margin-right: 5px; 
+    }
 }
 
 .content::-webkit-scrollbar {

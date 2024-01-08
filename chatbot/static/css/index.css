@@ -18,55 +18,53 @@
     font-family: 'Noto Sans KR';
     font-style: normal;
     font-weight: 100;
-    src: url(./font/NotoSansKR-Thin.woff) format('woff'),
-         url(./font/NotoSansKR-Thin.otf) format('opentype');
-  }
-  @font-face {
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.otf) format('opentype');
+}
+
+@font-face {
     font-family: 'Noto Sans KR';
     font-style: normal;
     font-weight: 300;
-    src: url(./font/NotoSansKR-Light.woff) format('woff'),
-         url(./font/NotoSansKR-Light.otf) format('opentype');
-  }
-  @font-face {
-     font-family: 'Noto Sans KR';
-     font-style: normal;
-     font-weight: 400;
-     src: url(./font/NotoSansKR-Regular.woff) format('woff'),
-          url(./font/NotoSansKR-Regular.otf) format('opentype');
-   }
-  @font-face {
-     font-family: 'Noto Sans KR';
-     font-style: normal;
-     font-weight: 500;
-     src: url(../font/NotoSansKR-Medium.woff2) format('woff2'),
-          url(../font/NotoSansKR-Medium.woff) format('woff'),
-          url(../font/NotoSansKR-Medium.otf) format('opentype');
-   }
-  @font-face {
-     font-family: 'Noto Sans KR';
-     font-style: normal;
-     font-weight: 700;
-     src: url(./font/NotoSansKR-Bold.woff) format('woff'),
-          url(./font/NotoSansKR-Bold.otf) format('opentype');
-   }
-  @font-face {
-     font-family: 'Noto Sans KR';
-     font-style: normal;
-     font-weight: 900;
-     src: url(./font/NotoSansKR-Black.woff) format('woff'),
-          url(./font/NotoSansKR-Black.otf) format('opentype');
-   }
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.otf) format('opentype');
+} 
 
-   @font-face {
-        font-family: "Multicolore";
-        src: url("https://db.onlinewebfonts.com/t/e0af8ee8cc49f194718d96d95440836f.eot");
-        src: url("https://db.onlinewebfonts.com/t/e0af8ee8cc49f194718d96d95440836f.eot?#iefix")format("embedded-opentype"),
-        url("https://db.onlinewebfonts.com/t/e0af8ee8cc49f194718d96d95440836f.woff2")format("woff2"),
-        url("https://db.onlinewebfonts.com/t/e0af8ee8cc49f194718d96d95440836f.woff")format("woff"),
-        url("https://db.onlinewebfonts.com/t/e0af8ee8cc49f194718d96d95440836f.ttf")format("truetype"),
-        url("https://db.onlinewebfonts.com/t/e0af8ee8cc49f194718d96d95440836f.svg#Multicolore")format("svg");
-    }
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 400;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.otf) format('opentype');
+} 
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 500;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.otf) format('opentype');
+} 
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 700;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.otf) format('opentype');
+} 
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 900;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.otf) format('opentype');
+}
+
+@font-face {
+    font-family: "Multicolore";
+    src: url("https://db.onlinewebfonts.com/t/e0af8ee8cc49f194718d96d95440836f.eot");
+    src: url("https://db.onlinewebfonts.com/t/e0af8ee8cc49f194718d96d95440836f.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/e0af8ee8cc49f194718d96d95440836f.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/e0af8ee8cc49f194718d96d95440836f.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/e0af8ee8cc49f194718d96d95440836f.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/e0af8ee8cc49f194718d96d95440836f.svg#Multicolore")format("svg");
+}
 
 body {
     font-family: "Noto Sans KR", "맑은 고딕", "Malgun Gothic",
@@ -82,6 +80,8 @@ body {
 
 input, textarea, button, span {
     font-family: "Noto Sans KR";
+    font-style: normal;
+    color: #333333;
 }
 
 .outer {
@@ -113,8 +113,9 @@ input, textarea, button, span {
     position: relative; 
     z-index: 1000; 
     display: flex;
-    justify-content: center; /* Center align the content */
-    position: relative; /* Needed for absolute positioning of the child */
+    justify-content: center;
+    position: relative; 
+    font-weight: 400;
 }
 
 .content {
@@ -159,7 +160,7 @@ input, textarea, button, span {
     cursor: pointer;
     border-radius: 8px;
     padding: 8px;
-    margin-right: 20px;
+    margin-right: 10px;
     position: absolute; /* Absolute position for the button */
     right: 0; /* Align to the right */
 }

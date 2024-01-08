@@ -48,8 +48,8 @@
 }
 
 .send-msg {
-    width: calc(100% - 85px);
-    border: 2px solid #f14b0f;
+    width: calc(100% - 80px);
+    border: 2.4px solid #f14b0f;
     border-radius: 20px;
     outline: none;
     resize: none;

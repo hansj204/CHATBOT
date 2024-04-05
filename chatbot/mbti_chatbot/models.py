@@ -6,7 +6,7 @@ import random
 import pandas as pd
 import nltk
 
-from .talkModel.talk_model import ask_chatbot, ask_gpt
+from .talkModel.talk_model import ask_chatbot
 from googletrans import Translator
 from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import stopwords
@@ -25,16 +25,11 @@ j_score = 0
 p_score = 0
 
 def predict(question, user_msg):
-    try:        
-        bot_msg = ask_chatbot(user_msg)
-        
-        if 0 < len(bot_msg):
-            return bot_msg
-        else:
-            return ask_gpt(question, user_msg)
+    try:
+        return ask_chatbot(question, user_msg)
     except Exception as e:
         print(f"에러 발생: {e}")
-        return "제가 잘 이해하지 못했어요. 다른 질문을 해볼게요."
+        return "네, 그럼 다른 질문을 해볼게요."
 
 def questionGet():
 

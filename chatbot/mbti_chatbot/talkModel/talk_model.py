@@ -3,9 +3,8 @@ import os
 import pickle
 import tensorflow as tf
 
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from konlpy.tag import Okt
 from PyKakao import KoGPT
 from decouple import config
 
@@ -18,12 +17,10 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 data_folder_path = os.path.join(current_directory, 'data')
 
 tokenizer_path = os.path.join(data_folder_path, 'tokenizer.pkl')
-model_weights_path = os.path.join(data_folder_path, 'weights_personas_5.h5')
+model_weights_path = os.path.join(data_folder_path, 'weights_personas.h5')
 
 KoGPT_KEY = config('KoGPT_KEY')
 api = KoGPT(service_key = KoGPT_KEY)
-
-okt = Okt()
 
 with open(tokenizer_path, 'rb') as f:
     talk_tokenizer = pickle.load(f)
@@ -32,7 +29,7 @@ tf.keras.backend.clear_session()
 
 START_TOKEN, END_TOKEN = [talk_tokenizer.vocab_size], [talk_tokenizer.vocab_size + 1]
 VOCAB_SIZE = talk_tokenizer.vocab_size + 2
-MAX_LENGTH = 100
+MAX_LENGTH = 40
 
 talk_model = transformer(vocab_size=VOCAB_SIZE, num_layers=2, dff=512, d_model=256, num_heads=8, dropout=0.1)
 talk_model.load_weights(model_weights_path)    
@@ -45,33 +42,20 @@ def preprocess_user_msg(msg):
     return msg
 
 def preprocess_bot_msg(msg):
-    msg = preprocess_user_msg(msg)
-       
-    index_of_q = msg.find('Q')
-    endings = ['!', '.', ',']
+    if 0 == len(msg): return msg
     
-    if index_of_q != -1:
-        msg = msg[:index_of_q]
-        
-    for ending in endings:
-        index = msg.find(ending)
-    
-        if index != -1:
-            msg = msg[:index + 1]
-            break
+    last_punctuation_index = max(msg.rfind('.'), msg.rfind(','), msg.rfind('!'))
+    msg = msg[:last_punctuation_index + 1]
         
     return msg
 
-def calculate_bleu_score(bot_msg, user_msg):
-    user_tokens = okt.morphs(user_msg)
-    chatbot_tokens = okt.morphs(bot_msg)
+def is_Right_Answer(user_msg, bot_msg):
+    if not (0 < len(bot_msg) <= MAX_LENGTH or "?" != bot_msg[-1]): return False
 
-    # TF-IDF 벡터화
-    vectorizer = TfidfVectorizer(tokenizer=lambda x: x, lowercase=False)
-    tfidf_matrix = vectorizer.fit_transform([user_tokens, chatbot_tokens])
+    vectorizer = CountVectorizer().fit_transform([user_msg, bot_msg])
+    cosine_sim = cosine_similarity(vectorizer)
 
-    # 코사인 유사도 계산
-    return cosine_similarity(tfidf_matrix[0], tfidf_matrix[1])[0][0]
+    return cosine_sim[0][1] >= float(0.6)
 
 def evaluate(user_msg):
   sentence = preprocess_user_msg(user_msg)
@@ -96,44 +80,35 @@ def get_bot_msg(user_msg):
     bot_msg = talk_tokenizer.decode([i for i in prediction if i < talk_tokenizer.vocab_size])
     return preprocess_bot_msg(bot_msg)
 
-def is_valid_msg(user_msg, bot_msg):
-    print(f"bot_msg: {bot_msg}")
-    print(calculate_bleu_score(bot_msg, user_msg))
-    return calculate_bleu_score(bot_msg, user_msg) >= 0.5 and (0 < len(bot_msg) <= MAX_LENGTH)
-
-def ask_chatbot(user_msg):
+def ask_chatbot(question, user_msg):
     bot_msg = get_bot_msg(user_msg)
     
-    if not is_valid_msg(user_msg, bot_msg):
-        user_msg = '나는' + user_msg
-        bot_msg = get_bot_msg('나는' + user_msg)
-        
-        if not is_valid_msg(user_msg, bot_msg): return ''
-        
-    return bot_msg
+    print('bot_msg :' + bot_msg)
+    
+    if True == is_Right_Answer(user_msg, bot_msg): 
+        return bot_msg
+    else:
+        return ask_gpt(question, user_msg)
 
 def ask_gpt(question, user_msg):
     text = '''정보: 말투 친절함, 익명, 한국인
-    정보를 바탕으로 Q의 문장에 공감하며 존댓말로 답장하세요. 단, 의문문으로 답하지 마세요.
+    정보를 바탕으로 Q의 문장에 공감하며 존댓말로 답장하세요. 단, 질문에 대해 공감형 답변을 하세요.
     Q: 안녕하세요.
     A: ''' + question + '''
     Q: 나는 ''' + user_msg + '''
     A: '''
     
     attempts = 0
-    max_attempts = 1
+    max_attempts = 2
     response = ''
 
     while attempts < max_attempts:
-        response = api.generate(text, 40, temperature=0.3, top_p=0.85)
+        response = api.generate(text, MAX_LENGTH, temperature=0.3, top_p=0.85)
         response = response['generations'][0]['text']
         response = preprocess_bot_msg(response)
                 
-        if calculate_bleu_score(response, user_msg) >= 0.5 and (0 < len(response) <= 40): break
+        if 0 < len(response) and "?" != response[-1] : return response
         
-        attempts += 1
-
-    if attempts > max_attempts:
-        response = "네, 그렇군요. 다음 주제로 이야기해볼까요?"
-
+        attempts+= 1
+                
     return response

@@ -82,9 +82,7 @@ def get_bot_msg(user_msg):
 
 def ask_chatbot(question, user_msg):
     bot_msg = get_bot_msg(user_msg)
-    
-    print('bot_msg :' + bot_msg)
-    
+        
     if True == is_Right_Answer(user_msg, bot_msg): 
         return bot_msg
     else:

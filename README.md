@@ -1,3 +1,5 @@
+⭐ 한국통신학회 학술대회 학부 우수논문 부분 장려상 [인공지능 기반 MBTI 검사 챗봇 시스템 구현에 관한 연구](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE11737549)
+
 ![슬라이드4](https://github.com/user-attachments/assets/e27ae907-e0a2-4fe1-ab2f-44459e1e4f4f)
 ![슬라이드5](https://github.com/user-attachments/assets/ecf2b112-7d61-46b3-8abb-2e9e76d664b2)
 ![슬라이드6](https://github.com/user-attachments/assets/3605355f-3911-4787-acd3-61c3172f754f)
